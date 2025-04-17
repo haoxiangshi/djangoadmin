@@ -1,0 +1,38 @@
+version: '3.7'
+
+# 应用服务
+services:
+  # 后端服务
+  flask_antdvue:
+    # 镜像名称
+    image: flask_antdvue
+    # 容器名称
+    container_name: flask_antdvue
+    # 构建镜像
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    #build: .
+    # 将容器运行在特权模式下，意味着容器内的进程将具
+    # 有访问宿主机的权限，包括文件系统、设备和系统功能等
+    privileged: true
+    # 指定容器中运行的用户
+    user: root
+    # 启动策略为始终重启
+    restart: always
+    # 设置网络模式为host模式
+    network_mode: host
+    # 端口映射
+    ports:
+      - 8022:8022
+    # 文件挂载
+    volumes:
+      - ./uploads:/data/apps/uploads
+    # 执行命令
+    command: python app.py runserver 0.0.0.0:8022 --noreload
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "10"
